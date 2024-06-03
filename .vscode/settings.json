@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "*.pde": "cpp",
+        "opcode.h": "c"
+    }
+}
