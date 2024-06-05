@@ -7,6 +7,28 @@
 #define NUM_OF_HEX_FIELDS 6
 #define NUM_OF_STR_FIELDS 3
 
+char *replacedStr(char *source, char *target, char *newStr)
+{
+    int len = strlen(source) - strlen(target) + strlen(newStr);
+    char *res = (char *)malloc(len + 1);
+    for (int is = 0, ir = 0; is < strlen(source); ++is, ++ir) {
+        int targetFound = 1;
+        for (int j = 0; j < strlen(target); ++j)
+            if (source[is + j] != target[j] || is + j >= strlen(source))
+                targetFound = 0;
+        if (targetFound) {
+            for (int j = 0; j < strlen(newStr); ++j) {
+                res[ir + j] = newStr[j];
+            }
+            is += strlen(target) - 1;
+            ir += strlen(newStr) - 1;
+        } else {
+            res[ir] = source[is];
+        }
+    }
+    return res;
+}
+
 int readHeader(FILE *file, Header *hdr)
 {
     fseek(file, 0, SEEK_SET);
@@ -116,17 +138,14 @@ char *fieldExists(Instruction instr, char field)
 
 int getField(Instruction instr, char field)
 {
-    char *a = instr.type->opcode;
-    int res = 0;
-    int mask = 0;
-    int div = 0;
+    int res = 0, mask = 0, div = 0;
 
-    for (int i = 0; *(a + i); ++i) {
+    for (char *a = instr.type->opcode; *a; ++a) {
         mask <<= 1;
         div <<= 1;
-        if (*(a + i) == field) {
+        if (*a == field) {
             mask |= 1;
-            if (*(a + i + 1) != field)
+            if (*(a + 1) != field)
                 div |= 1;
         }
     }
