@@ -73,7 +73,7 @@ Instruction readInstruction(char *text, int textLen, int *pos)
             char bit = ((currByte & (1 << (7 - i)))) >> (7 - i);
             for (int j = 0; j < NUM_OF_INSTRUCT_TYPES; ++j) {
                 if (candidates[j] != 0) {
-                    char opchar = instructionTypes[j].opcode[i];
+                    char opchar = instructionTypes[j].opcode[(currPos - (*pos)) * 8 + i];
                     if ((opchar - '0' == 0 || opchar - '0' == 1) && opchar - '0' != bit) {
                         candidates[j] = 0;
                         --num_of_candidates;
