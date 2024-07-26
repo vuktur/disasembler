@@ -16,6 +16,16 @@
 char *replacedStr(char *source, char *target, char *newStr);
 
 /**
+ * @brief 
+ * 
+ * @param source 
+ * @param field 
+ * @param newStr 
+ * @return char* 
+ */
+char *replacedStrField(char *source, char field, char *newStr);
+
+/**
  * @brief 0001 0010 0011 0100 -> 1234 -> "1234"
  * 
  * @param bytes 
@@ -32,6 +42,44 @@ char *byteFormatHex(char *bytes, int len);
  * @return char* 
  */
 char *byteFormatRevHex(char *bytes, int len);
+
+/**
+ * @brief strip the leading zeros of a string
+ * 
+ * @param str 
+ * @return char* 
+ */
+char *stripLeadingZeros(char *str);
+
+/**
+ * @brief 
+ * 
+ * @param instrType 
+ * @param field 
+ * @return int 
+ */
+int fieldExists(const InstructionType *instrType, char field);
+
+/**
+ * @brief Get the designated field, 
+ * does not apply for big fields with braces
+ * 
+ * @param instr Instruction*
+ * @param field char
+ * @return int the value of the field
+ */
+int getField(Instruction *instr, char field);
+
+/**
+ * @brief 
+ * 
+ * @param byte 
+ * @param mod 
+ * @param reg 
+ * @param rxm 
+ * @return int 
+ */
+int decomposeRegMem(char byte, char *mod, char *reg, char *rxm);
 
 /**
  * @brief 
@@ -60,44 +108,6 @@ const char** splitCodeFormat(const InstructionType* instrType);
 const char** splitCodeFormatTo(const InstructionType* instrType, const char **parts);
 
 /**
- * @brief 
- * 
- * @param text 
- * @param textLen 
- * @param pos 
- * @return Instruction 
- */
-Instruction readInstruction(char *text, int textLen, unsigned int pos);
-
-/**
- * @brief 
- * 
- * @param instrType 
- * @param field 
- * @return int 
- */
-int fieldExists(const InstructionType *instrType, char field);
-
-/**
- * @brief Get the designated field, 
- * does not apply for big fields with braces
- * 
- * @param instr Instruction*
- * @param field char
- * @return int the value of the field
- */
-int getField(Instruction *instr, char field);
-
-/**
- * @brief 
- * 
- * @param file 
- * @param hdr 
- * @return int 
- */
-int readText(FILE *file, Header *hdr);
-
-/**
  * @brief Get the length of the instruction
  * 
  * @param instr 
@@ -117,10 +127,40 @@ int calcInstrLengthFrom(Instruction *instr, const char **codeFormatParts);
 /**
  * @brief 
  * 
+ * @param text 
+ * @param textLen 
+ * @param pos 
+ * @return Instruction 
+ */
+Instruction readInstruction(char *text, int textLen, unsigned int pos);
+
+/**
+ * @brief Get the Disp object
+ * 
+ * @param mod 
+ * @param rxm 
+ * @param pos 
+ * @param instr 
+ * @return char* 
+ */
+char *getDisp(char mod, char rxm, int pos, Instruction *instr);
+
+/**
+ * @brief 
+ * 
  * @param pos 
  * @param instr 
  * @return int 
  */
 int printInstruction(unsigned int pos, Instruction* instr);
+
+/**
+ * @brief 
+ * 
+ * @param file 
+ * @param hdr 
+ * @return int 
+ */
+int readText(FILE *file, Header *hdr);
 
 #endif
