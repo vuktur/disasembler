@@ -245,9 +245,10 @@ Instruction readInstruction(char *text, int textLen, unsigned int pos)
             status = byteMatch(*(text + pos + currentPos), codeFormatParts[currentPos]);
             if (status == 1) {
                 ++currentPos;
-            } else {
-                if (status == 0)
-                    isMatch = 0;
+            } else if (status == 0) {
+                isMatch = 0;
+                break;
+            } else { // 2 = end, -1 = err
                 break;
             }
         }
@@ -255,6 +256,10 @@ Instruction readInstruction(char *text, int textLen, unsigned int pos)
         if (isMatch) {
             res.type = instructionTypes + i;
             calcInstrLengthFrom(&res, codeFormatParts);
+            if (pos + res.length >= textLen) {
+                res.length = textLen - pos;
+                res.type = NULL;
+            }
             break;
         }
     }
@@ -311,6 +316,11 @@ int printInstruction(unsigned int pos, Instruction *instr)
     char *value = byteFormatHex(instr->data, instr->length);
     printf("%04x: %-13s ", pos, value);
     free(value);
+
+    if (instr->type == NULL) {
+        printf("(undefined)\n");
+        return 0;
+    }
 
     char fields[NUM_OF_PRINTFMT_FIELDS] = {'\0'};
     char *datas[NUM_OF_INSTRUCT_TYPES] = {NULL};
@@ -479,11 +489,11 @@ int readText(FILE *file, Header *hdr)
     unsigned int pos = 0;
     while (pos < hdr->textlen) {
         Instruction res = readInstruction(text, hdr->textlen, pos);
-        if (res.type == NULL) {
-            printf("instruction has no match\n");
-            free(text);
-            return 1;
-        }
+        // if (res.type == NULL) {
+        //     printf("instruction has no match\n");
+        //     free(text);
+        //     return 1;
+        // }
         if (res.length == 0) {
             printf("zero length instruction\n");
             free(text);

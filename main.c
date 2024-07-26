@@ -18,7 +18,7 @@ int main(int argc, char **argv)
 
     Header *hdr = malloc(sizeof(Header));
     status = readHeader(file, hdr);
-    printHeader(hdr);
+    // printHeader(hdr);
 
     status = readText(file, hdr);
     // char a = 0b11111111;

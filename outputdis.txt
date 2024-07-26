@@ -1,5 +1,3 @@
-magic: 0103 	flags: 20 	cpu: 04 	hdrlen: 32B 
-textlen: 320B 	datalen: 20B 	bsslen: 66B 	entrylen: 0B 	totallen: 65536B 	symslen: 704B 
 0000: 31ed          xor bp, bp
 0002: 89e3          mov bx, sp
 0004: 8b07          mov ax, [bx]
@@ -140,4 +138,4 @@ textlen: 320B 	datalen: 20B 	bsslen: 66B 	entrylen: 0B 	totallen: 65536B 	symsle
 013a: 5f            pop di
 013b: ebf8          jmp short 0135
 013d: 0000          add [bx+si], al
-013f: 0000          add [bx+si], al
+013f: 00            (undefined)

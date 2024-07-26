@@ -124,7 +124,7 @@ const InstructionType instructionTypes[NUM_OF_INSTRUCT_TYPES] = {
     {"pushf", "10011100"},                // PUSHF - Push flags
     {"popf", "10011101"},                 // POPF - Pop flags
     {"add $R, $r", "000000dw(Rr)"},       // ADD - Add Reg/memory with register to Either
-/**/    {"add $R, $D", "100000WW(R000)(D)"},  // ADD - Add immediate to register/memory
+    {"add $R, $D", "100000WW(R000)(D)"},  // ADD - Add immediate to register/memory
     {"add a$w, $D", "0000010w(D)"},       // ADD - Add immediate to accumulator
     {"adc $R, $r", "000100dw(Rr)"},       // ADC - Add with carry Reg./memory with register to Either
     {"adc $R, $D", "100000WW(R010)(D)"},  // ADC - Add with carry immediate to register/memory
