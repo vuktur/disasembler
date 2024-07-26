@@ -1,5 +1,5 @@
-#ifndef OPCODE_H
-#define OPCODE_H
+#ifndef INSTRUCTION_H
+#define INSTRUCTION_H
 
 /*
  * --- FIELDS ---
@@ -12,17 +12,18 @@
  *   0 : byte instruction
  *   1 : word instruction
  *
- * s (sign ext)
- *   0 : word of data
- *   1 : sign extended byte
+ * W (sign ext word)
+ *   00 : byte of data
+ *   01 : word of data
+ *   11 : sign extended byte
  *
- * m (mod)
+ * R first 2 bits (mod) :
  *   00 : disp = 0 (except if r/m = 110, then EA = disph, displ)
  *   01 : disp = displ sign extended to word
  *   10 : disp = disph, displ
  *   11 : r/m is treated as a reg field
  *
- * R (r/m)
+ * R last 3 bits (r/m) :
  *   000 : EA = (BX) + (SI) + DISP
  *   001 : EA = (BX) + (DI) + DISP
  *   010 : EA = (BP) + (SI) + DISP
@@ -32,13 +33,15 @@
  *   110 : EA = (BP)        + DISP (except if mod = 00, then EA = disph, displ)
  *   111 : EA = (BX)        + DISP
  *
- * v (count)
+ * c (count)
  *   0 : count = 1
  *   1 : count = CL
  *
  * x (unused)
  *
  * z (string primitives compare with ZF FLAG)
+ *   0 : rep while e/z, terminates on ZF = 0
+ *   1 : rep while ne/nz, terminates on ZF = 1
  *
  * r (reg)
  *   000 : AX/AL
@@ -51,7 +54,7 @@
  *   111 : DI/BH
  *     w = 1/0
  *
- * S (segment reg)
+ * s (segment reg)
  *   00 : ES
  *   01 : CS
  *   10 : SS
@@ -63,7 +66,7 @@
  *
  * i (interrupt type, byte)
  *
- * P (displacement)
+ * P (displacement, byte or word)
  *
  * o (offset or segment, word)
  *
@@ -94,7 +97,7 @@
  *  | |  +--------+--------+
  *  | |  | FLAGSH | FLAGSL | Status Flags
  *  | |  +--------+--------+
- *  | |   ____ODIT SZ_A_P_C
+ *  | |   ****ODIT SZ*A*P*C
  *  | |
  *  | |  +-----------------+
  *  | +->|       CS        | Code segment
@@ -120,26 +123,63 @@
  *
  */
 
-#define NUM_OF_INSTRUCT_TYPES 171
-#define MAX_INSTRUCT_LEN 4
-#define INSTR_FORMAT_LEN 33
-#define INSTR_OPCODE_LEN 33
+#define NUM_OF_INSTRUCT_TYPES 132
+#define NUM_OF_PRINTFMT_FIELDS 11
+#define INSTR_PRINTFMT_LEN 33
+#define INSTR_CODEFMT_LEN 33
+#define MAX_INSTRUCT_LEN 15 // 15 bytes max for x86
 
-/// @brief An instruction type
-typedef struct InstructionType {
-    char format[INSTR_FORMAT_LEN];
-    char opcode[INSTR_OPCODE_LEN];
+/**
+ * @brief An instruction type
+ * @param printFormat char[INSTR_PRINTFMT_LEN]
+ * @param codeFormat char[INSTR_CODEFMT_LEN]
+ */
+typedef struct InstructionTypeStruct {
+    char printFormat[INSTR_PRINTFMT_LEN];
+    char codeFormat[INSTR_CODEFMT_LEN];
 } InstructionType;
 
-/// @brief Get the name of the segment register
-char *getSeg(int s);
+/**
+ * @brief An instruction
+ * @param type struct InstructionType*
+ * @param data char*
+ * @param length unsigned int
+ *
+ */
+typedef struct InstructionStruct {
+    const InstructionType *type;
+    char *data;
+    unsigned int length;
+    short unsigned int partsLengths[MAX_INSTRUCT_LEN];
+} Instruction;
 
-/// @brief Get the name of the register
-char *getReg(int r, char w);
+/**
+ * @brief Get the name of the segment register
+ *
+ * @param s int
+ * @return char*
+ */
+char *getSegPrintStr(int s);
 
-/// @brief Get the name of the register or memory position
-char *getRegMem(int m, int R);
+/**
+ * @brief Get the name of the register
+ *
+ * @param r int
+ * @param w int
+ * @return char*
+ */
+char *getRegPrintStr(int r, int w);
+
+/**
+ * @brief Get the name of the register or memory position
+ *
+ * @param m int
+ * @param R int
+ * @return char*
+ */
+char *getRegMemPrintStr(int m, int R);
 
 extern const InstructionType instructionTypes[];
+extern const char printFormatFields[];
 
 #endif

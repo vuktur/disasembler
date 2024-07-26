@@ -1,6 +1,6 @@
 {
     "files.associations": {
         "*.pde": "cpp",
-        "opcode.h": "c"
-    }
+    },
+    "cmake.ignoreCMakeListsMissing": true
 }
